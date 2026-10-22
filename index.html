@@ -94,6 +94,10 @@
 
   a:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 3px; border-radius: 2px; }
 
+  .about { border-top: 1px solid var(--rule); padding: 40px 0 36px; }
+  .about h2 { font-family: var(--head); font-weight: 700; font-size: clamp(24px, 4vw, 32px); line-height: 1.15; letter-spacing: -0.01em; margin: 0 0 14px; }
+  .about p { margin: 0; max-width: 60ch; }
+
   footer { border-top: 1px solid var(--rule); padding: 28px 0 56px; color: var(--ink-soft); font-size: 15px; }
   footer p { margin: 0; max-width: 60ch; }
 
@@ -134,75 +138,6 @@
      Analytics links are private and are NOT shown on this page. -->
   <!-- PROJECTS:START -->
 
-    <!-- 1. Journal -->
-    <li class="project" data-project="the-healing-pages">
-      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <rect x="22" y="6" width="76" height="68" rx="3"/>
-        <line class="accent" x1="38" y1="6" x2="38" y2="74"/>
-        <line x1="46" y1="24" x2="88" y2="24"/>
-        <line x1="46" y1="38" x2="88" y2="38"/>
-        <line x1="46" y1="52" x2="72" y2="52"/>
-        <path class="accent" d="M76 60 l10 -10"/>
-      </svg>
-      <div>
-        <h2><a href="https://the-healing-pages.vercel.app/?utm_source=projects-page">The Healing Pages</a></h2>
-        <p><strong>Why I built it.</strong> I wanted a quiet place to write one small page a day, and to hear it back by reading it aloud. Functions essentially like a therapy journal, really simplistic.</p>
-        <p><strong>What it does.</strong> A daily journal that tracks your streak, pages and word count, shows a calendar of what you've written, and has a recite mode for reading a page out loud.</p>
-        <a class="visit" href="https://the-healing-pages.vercel.app/?utm_source=projects-page">Open site</a>
-      </div>
-    </li>
-
-    <!-- 2. Blog -->
-    <li class="project" data-project="psych-eco-blog">
-      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <path d="M8 66 L112 66"/>
-        <path d="M14 62 C40 56, 62 30, 106 14"/>
-        <path class="accent" d="M14 20 C44 24, 66 48, 106 58"/>
-        <circle class="fill-accent" cx="60" cy="40" r="5" stroke="none"/>
-      </svg>
-      <div>
-        <h2><a href="https://eco-psych-blog-app.vercel.app/?utm_source=projects-page">The Irrational Margin</a></h2>
-        <p><strong>Why I built it.</strong> I wanted to write about why people decide the way they do, and what it costs them.</p>
-        <p><strong>What it does.</strong> A blog of essays on behavioural economics, where psychology meets the way people spend, save and choose.</p>
-        <a class="visit" href="https://eco-psych-blog-app.vercel.app/?utm_source=projects-page">Open site</a>
-      </div>
-    </li>
-
-    <!-- 3. Monte Carlo -->
-    <li class="project" data-project="root-t">
-      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M8 40 L24 36 L40 42 L56 30 L72 34 L88 22 L112 16" opacity=".35"/>
-        <path d="M8 40 L24 44 L40 38 L56 50 L72 44 L88 56 L112 62" opacity=".35"/>
-        <path d="M8 40 L24 40 L40 48 L56 44 L72 54 L88 48 L112 46" opacity=".35"/>
-        <path d="M8 40 L24 34 L40 28 L56 36 L72 26 L88 30 L112 30" opacity=".35"/>
-        <path class="accent" stroke-width="2.4" d="M8 40 L24 42 L40 34 L56 38 L72 30 L88 40 L112 34"/>
-      </svg>
-      <div>
-        <h2><a href="https://root-t.vercel.app/?utm_source=projects-page">Root T</a></h2>
-        <p><strong>Why I built it.</strong> I wanted to understand how options are priced, not just memorise the formula.</p>
-        <p><strong>What it does.</strong> Prices a European call option with 100,000 random simulations, then compares the result live against the Black-Scholes formula across 40 strikes and 20 maturities.</p>
-        <a class="visit" href="https://root-t.vercel.app/?utm_source=projects-page">Open site</a>
-        <a class="visit" href="https://github.com/geraldchen56-droid/option-pricer">Code on GitHub</a>
-      </div>
-    </li>
-
-    <!-- 4. IB Probability Lab -->
-    <li class="project" data-project="ib-aahl-probability-lab">
-      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <path d="M8 68 L112 68"/>
-        <path d="M70 68 L70 38 C 76 54, 90 64, 104 66 L104 68 Z" class="fill-accent" stroke="none" opacity=".85"/>
-        <path d="M10 66 C 30 66, 42 60, 50 36 C 55 22, 65 22, 70 36 C 78 60, 90 66, 110 66"/>
-        <line x1="60" y1="68" x2="60" y2="24" stroke-dasharray="3 5" opacity=".5"/>
-      </svg>
-      <div>
-        <h2><a href="https://ib-aahl-probability-lab.vercel.app/?utm_source=projects-page">IB Probability Lab</a></h2>
-        <p><strong>Why I built it.</strong> I wanted to revise IB Maths AA probability properly, and give other students on the course something better than a page of formulas. Mainly it's formatted towards my way of learning one of the most annoying and knowledge based topics in AAHL, unlike calculus where the application of formulas will get the answer.</p>
-        <p><strong>What it does.</strong> Covers every SL and HL probability topic with live models you can drag, Casio fx-CG50 and TI-84 keystrokes, and unlimited randomised practice questions with full working.</p>
-        <a class="visit" href="https://ib-aahl-probability-lab.vercel.app/?utm_source=projects-page">Open site</a>
-      </div>
-    </li>
-
-    <!-- 5. Edge Lab -->
     <li class="project" data-project="edge-lab">
       <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <g transform="rotate(-9 44 42)">
@@ -222,8 +157,79 @@
       </div>
     </li>
 
+  
+
+    <li class="project" data-project="root-t">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 40 L24 36 L40 42 L56 30 L72 34 L88 22 L112 16" opacity=".35"/>
+        <path d="M8 40 L24 44 L40 38 L56 50 L72 44 L88 56 L112 62" opacity=".35"/>
+        <path d="M8 40 L24 40 L40 48 L56 44 L72 54 L88 48 L112 46" opacity=".35"/>
+        <path d="M8 40 L24 34 L40 28 L56 36 L72 26 L88 30 L112 30" opacity=".35"/>
+        <path class="accent" stroke-width="2.4" d="M8 40 L24 42 L40 34 L56 38 L72 30 L88 40 L112 34"/>
+      </svg>
+      <div>
+        <h2><a href="https://root-t.vercel.app/?utm_source=projects-page">Root T</a></h2>
+        <p><strong>Why I built it.</strong> I wanted to understand how options are priced, not just memorise the formula.</p>
+        <p><strong>What it does.</strong> Prices a European call option with 100,000 random simulations, then compares the result live against the Black-Scholes formula across 40 strikes and 20 maturities.</p>
+        <a class="visit" href="https://root-t.vercel.app/?utm_source=projects-page">Open site</a>
+        <a class="visit" href="https://github.com/geraldchen56-droid/option-pricer">Code on GitHub</a>
+      </div>
+    </li>
+
+    <li class="project" data-project="psych-eco-blog">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M8 66 L112 66"/>
+        <path d="M14 62 C40 56, 62 30, 106 14"/>
+        <path class="accent" d="M14 20 C44 24, 66 48, 106 58"/>
+        <circle class="fill-accent" cx="60" cy="40" r="5" stroke="none"/>
+      </svg>
+      <div>
+        <h2><a href="https://eco-psych-blog-app.vercel.app/?utm_source=projects-page">The Irrational Margin</a></h2>
+        <p><strong>Why I built it.</strong> I wanted to write about why people decide the way they do, and what it costs them.</p>
+        <p><strong>What it does.</strong> A blog of essays on behavioural economics, where psychology meets the way people spend, save and choose.</p>
+        <a class="visit" href="https://eco-psych-blog-app.vercel.app/?utm_source=projects-page">Open site</a>
+      </div>
+    </li>
+
+    <li class="project" data-project="the-healing-pages">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <rect x="22" y="6" width="76" height="68" rx="3"/>
+        <line class="accent" x1="38" y1="6" x2="38" y2="74"/>
+        <line x1="46" y1="24" x2="88" y2="24"/>
+        <line x1="46" y1="38" x2="88" y2="38"/>
+        <line x1="46" y1="52" x2="72" y2="52"/>
+        <path class="accent" d="M76 60 l10 -10"/>
+      </svg>
+      <div>
+        <h2><a href="https://the-healing-pages.vercel.app/?utm_source=projects-page">The Healing Pages</a></h2>
+        <p><strong>Why I built it.</strong> I wanted a quiet place to write one small page a day, and to hear it back by reading it aloud. Functions essentially like a therapy journal, really simplistic.</p>
+        <p><strong>What it does.</strong> A daily journal that tracks your streak, pages and word count, shows a calendar of what you've written, and has a recite mode for reading a page out loud.</p>
+        <a class="visit" href="https://the-healing-pages.vercel.app/?utm_source=projects-page">Open site</a>
+      </div>
+    </li>
+
+    <li class="project" data-project="ib-aahl-probability-lab">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M8 68 L112 68"/>
+        <path d="M70 68 L70 38 C 76 54, 90 64, 104 66 L104 68 Z" class="fill-accent" stroke="none" opacity=".85"/>
+        <path d="M10 66 C 30 66, 42 60, 50 36 C 55 22, 65 22, 70 36 C 78 60, 90 66, 110 66"/>
+        <line x1="60" y1="68" x2="60" y2="24" stroke-dasharray="3 5" opacity=".5"/>
+      </svg>
+      <div>
+        <h2><a href="https://ib-aahl-probability-lab.vercel.app/?utm_source=projects-page">IB Probability Lab</a></h2>
+        <p><strong>Why I built it.</strong> I wanted to revise IB Maths AA probability properly, and give other students on the course something better than a page of formulas. Mainly it's formatted towards my way of learning one of the most annoying and knowledge based topics in AAHL, unlike calculus where the application of formulas will get the answer.</p>
+        <p><strong>What it does.</strong> Covers every SL and HL probability topic with live models you can drag, Casio fx-CG50 and TI-84 keystrokes, and unlimited randomised practice questions with full working.</p>
+        <a class="visit" href="https://ib-aahl-probability-lab.vercel.app/?utm_source=projects-page">Open site</a>
+      </div>
+    </li>
+
   <!-- PROJECTS:END -->
   </ol>
+
+  <section class="about" aria-labelledby="about-h">
+    <h2 id="about-h">About me</h2>
+    <p>I'm Gerald, an IB Diploma student who likes economics and maths. I build small sites to understand things properly: how options are priced, how probability really works, and why people make irrational choices. Everything on this page is something I made, and I keep adding to it.</p>
+  </section>
 
   <footer>
     <p>This page counts visits with Vercel Web Analytics, which does not use cookies.</p>
