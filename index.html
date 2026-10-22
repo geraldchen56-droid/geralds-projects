@@ -4,125 +4,232 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Gerald Chen: Projects</title>
-<meta name="description" content="Five things Gerald Chen has built to learn, practise and write: a journal, a behavioural economics blog, an option-pricing simulation, an IB probability guide and trading-interview games.">
+<meta name="description" content="Things Gerald Chen has built to learn, practise and write: trading-interview games, a Monte Carlo option pricer, a behavioural economics blog, a journal, an IB probability guide and a study tracker.">
 <meta property="og:title" content="Gerald Chen: Projects">
-<meta property="og:description" content="A journal, a behavioural economics blog, a Monte Carlo option pricer, an IB probability guide and trading-interview games.">
+<meta property="og:description" content="Things Gerald Chen has built to learn, practise and write.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#EDF0F4">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#ECE6DF">
+<script>
+  /* Apply the saved or system theme before paint, so there is no flash. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('theme'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link href="https://api.fontshare.com/v2/css?f[]=switzer@400,401,500&display=swap" rel="stylesheet">
 <style>
+  /* Two columns, after a Nestré-style layout: a fixed text column on the left,
+     and project "sheets" on the right that stack over each other as you scroll. */
   :root {
-    --paper: #EDF0F4;
-    --grid: #DCE2EA;
-    --rule: #C3CCD8;
-    --ink: #101C36;
-    --ink-soft: #4A5873;
-    --cobalt: #2342E8;
-    --marker: #FFE066;
-    --head: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
-    --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --bg: #ECE6DF;
+    --ink: #0F0F0F;
+    --soft: #4F4F4F;
+    --muted: #8C857C;
+    --accent: #8A755B;
+    --rule: #D6CEC3;
+    --sheet-1: #E3DCD2;
+    --sheet-2: #DAD1C5;
+    --sheet-3: #D1C7B9;
+    --sheet-ink: #2B2620;
+    --path: rgba(43, 38, 32, 0.18);
+    --font: "Switzer", "Helvetica Neue", Arial, sans-serif;
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --bg: #171411;
+    --ink: #EDE7DF;
+    --soft: #B3AA9F;
+    --muted: #8A8278;
+    --accent: #C7AE8B;
+    --rule: #2F2A24;
+    --sheet-1: #211D19;
+    --sheet-2: #29241F;
+    --sheet-3: #312B25;
+    --sheet-ink: #EDE7DF;
+    --path: rgba(237, 231, 223, 0.16);
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
     margin: 0;
-    background-color: var(--paper);
-    background-image:
-      linear-gradient(var(--grid) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 28px 28px;
+    background: var(--bg);
     color: var(--ink);
-    font-family: var(--body);
-    font-size: 18px;
-    line-height: 1.6;
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.4;
+    transition: background-color 300ms ease, color 300ms ease;
   }
-  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-  /* Hero */
-  .hero { padding: 64px 0 8px; }
-  .name { font-family: var(--head); font-weight: 500; font-size: 18px; margin: 0 0 14px; color: var(--ink-soft); }
-  .hero h1 {
-    font-family: var(--head);
-    font-weight: 700;
-    font-size: clamp(34px, 7vw, 64px);
-    line-height: 1.04;
-    letter-spacing: -0.02em;
-    margin: 0;
-    max-width: 14em;
-  }
-  .hero .lede { margin: 20px 0 0; max-width: 34em; color: var(--ink-soft); }
-  #paths { display: block; width: 100%; height: 200px; margin-top: 28px; }
-
-  /* Project rows */
-  .projects { margin: 24px 0 0; padding: 0; list-style: none; }
-  .project {
+  .layout {
     display: grid;
-    grid-template-columns: 120px 1fr;
-    gap: 32px;
-    padding: 40px 0 44px;
-    border-top: 1px solid var(--rule);
+    grid-template-columns: minmax(0, 470px) minmax(0, 1fr);
+    gap: 0 96px;
+    padding: 0 max(32px, env(safe-area-inset-right)) 0 max(32px, env(safe-area-inset-left));
   }
-  .fig { width: 120px; height: 80px; color: var(--ink); }
-  .fig .accent { stroke: var(--cobalt); }
-  .fig .fill-accent { fill: var(--cobalt); }
+
+  /* Left column */
+  .intro {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0;
+  }
+  .wordmark {
+    margin: 0;
+    font-weight: 500;
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .intro h1 {
+    margin: 32px 0 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .intro h1 .who { color: var(--accent); }
+  .intro .copy { margin-top: 20px; color: var(--soft); font-size: 15px; line-height: 1.4; letter-spacing: -0.01em; }
+  .intro .copy p { margin: 0 0 20px; max-width: 30em; }
+  .tagline { margin: 12px 0 0; font-style: italic; font-weight: 500; font-size: 18px; color: var(--accent); }
+  .intro .bottom { margin-top: auto; }
+  .note { margin: 0 0 20px; max-width: 30em; font-size: 12px; line-height: 1.5; color: var(--muted); }
+  nav { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 24px; font-size: 20px; }
+  nav a, .toggle { color: var(--accent); text-decoration: none; }
+  nav a:hover, .toggle:hover { color: var(--ink); }
+  .toggle {
+    font: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .toggle .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 1.5px solid currentColor;
+    background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+  }
+
+  /* Right column: sheets */
+  .stack { padding: 32px 0 30vh; }
+  .sheet {
+    position: sticky;
+    background: var(--sheet-1);
+    color: var(--sheet-ink);
+    transition: background-color 300ms ease, color 300ms ease;
+  }
+  .cover { top: 32px; width: 80%; height: min(72vh, 720px); margin-bottom: 18vh; }
+  #paths { display: block; width: 100%; height: 100%; }
+
+  ol.projects { list-style: none; margin: 0; padding: 0; }
+  .project {
+    position: sticky;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 28px;
+    min-height: min(72vh, 720px);
+    padding: 28px 32px 32px;
+    margin-bottom: 18vh;
+    background: var(--sheet-1);
+    color: var(--sheet-ink);
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.02);
+    transition: background-color 300ms ease, color 300ms ease;
+  }
+  /* Offset and tint each sheet so the pile reads like a collage. */
+  .project:nth-child(3n+1) { width: 74%; margin-left: 26%; background: var(--sheet-2); }
+  .project:nth-child(3n+2) { width: 70%; margin-left: 10%; background: var(--sheet-1); }
+  .project:nth-child(3n+3) { width: 78%; margin-left: 18%; background: var(--sheet-3); }
+  .project:nth-child(1) { top: 48px; }
+  .project:nth-child(2) { top: 64px; }
+  .project:nth-child(3) { top: 80px; }
+  .project:nth-child(4) { top: 96px; }
+  .project:nth-child(5) { top: 112px; }
+  .project:nth-child(6) { top: 128px; }
+  .project:nth-child(7) { top: 144px; }
+  .project:nth-child(n+8) { top: 160px; }
+  .project:last-child { margin-bottom: 0; }
+
+  .fig { width: 100%; max-width: 300px; height: auto; aspect-ratio: 3 / 2; color: var(--sheet-ink); justify-self: start; }
+  .fig .accent { stroke: var(--accent); }
+  .fig .fill-accent { fill: var(--accent); }
+  .project > div { align-self: end; }
   .project h2 {
-    font-family: var(--head);
-    font-weight: 700;
-    font-size: clamp(24px, 4vw, 32px);
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-    margin: 0 0 14px;
+    margin: 0 0 16px;
+    font-weight: 500;
+    font-size: clamp(28px, 3.2vw, 40px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
   }
-  .project h2 a {
-    color: inherit;
+  .project h2 a { text-decoration: none; }
+  .project h2 a:hover { color: var(--accent); }
+  .project p { margin: 0 0 12px; max-width: 36em; font-size: 15px; line-height: 1.4; letter-spacing: -0.01em; color: var(--sheet-ink); opacity: 0.86; }
+  .project p strong { font-weight: 500; color: var(--accent); opacity: 1; }
+  .visit {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 18px;
+    color: var(--accent);
     text-decoration: none;
-    background-image: linear-gradient(var(--marker), var(--marker));
-    background-repeat: no-repeat;
-    background-position: 0 88%;
-    background-size: 0% 38%;
-    transition: background-size 180ms ease;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
   }
-  .project h2 a:hover, .project h2 a:focus-visible { background-size: 100% 38%; }
-  .project p { margin: 0 0 10px; max-width: 60ch; }
-  .project p strong { font-family: var(--head); font-weight: 700; font-size: 0.95em; }
-  .visit { display: inline-block; margin-top: 8px; font-family: var(--head); font-weight: 500; color: var(--cobalt); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
-  .visit:hover { color: var(--ink); }
-  .visit + .visit { margin-left: 20px; }
-  .soon { display: inline-block; margin-top: 8px; font-family: var(--head); font-weight: 500; color: var(--ink-soft); }
+  .visit:hover { color: var(--sheet-ink); }
+  .visit + .visit { margin-left: 24px; }
 
-  a:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 3px; border-radius: 2px; }
-
-  .about { border-top: 1px solid var(--rule); padding: 40px 0 36px; }
-  .about h2 { font-family: var(--head); font-weight: 700; font-size: clamp(24px, 4vw, 32px); line-height: 1.15; letter-spacing: -0.01em; margin: 0 0 14px; }
-  .about p { margin: 0; max-width: 60ch; }
-
-  footer { border-top: 1px solid var(--rule); padding: 28px 0 56px; color: var(--ink-soft); font-size: 15px; }
-  footer p { margin: 0; max-width: 60ch; }
-
-  @media (max-width: 620px) {
-    body { font-size: 17px; }
-    .hero { padding-top: 44px; }
-    #paths { height: 150px; }
-    .project { grid-template-columns: 1fr; gap: 16px; padding: 32px 0 36px; }
-    .fig { width: 96px; height: 64px; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; padding: 0 16px; }
+    .intro { position: static; height: auto; padding: 16px 0 40px; }
+    .wordmark { font-size: 36px; }
+    .intro .bottom { margin-top: 24px; }
+    .stack { padding: 0 0 48px; }
+    .cover { position: relative; top: auto; width: 100%; height: 220px; margin-bottom: 24px; }
+    .project, .project:nth-child(n) { position: relative; top: auto; width: 100%; margin: 0 0 16px; min-height: 0; padding: 24px 20px; }
+    .fig { max-width: 180px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .project h2 a { transition: none; }
+    body, .sheet, .project { transition: none; }
   }
 </style>
 </head>
 <body>
-<main class="wrap">
-  <header class="hero">
-    <p class="name">Gerald Chen</p>
-    <h1>Things I've built to learn, practise and write.</h1>
-    <p class="lede">Six projects, all live. Each one has a short note on why I made it and what it does.</p>
-    <canvas id="paths" aria-hidden="true"></canvas>
+<div class="layout">
+  <header class="intro">
+    <p class="wordmark">Gerald Chen</p>
+    <h1><span class="who">Gerald Chen</span>. Things I've built to learn, practise and write.</h1>
+    <div class="copy">
+      <p>I'm Gerald, an IB Diploma student who likes economics and maths. I build small sites to understand things properly: how options are priced, how probability really works, and why people make irrational choices. Everything on this page is something I made, and I keep adding to it.</p>
+      <p>Six projects, all live. Each one has a short note on why I made it and what it does.</p>
+    </div>
+    <p class="tagline">Built to understand things properly.</p>
+    <div class="bottom">
+      <p class="note">This page counts visits with Vercel Web Analytics, which does not use cookies. PS: A lot of my inspiration comes from staring into my ceiling with the music on, give it a try, creativity feels rare in the age of AI.</p>
+      <nav aria-label="Page">
+        <a href="#projects">Projects</a>
+        <a href="https://github.com/geraldchen56-droid">GitHub</a>
+        <button class="toggle" type="button" id="theme-toggle" aria-pressed="false"><span class="dot" aria-hidden="true"></span><span class="label">Dark mode</span></button>
+      </nav>
+    </div>
   </header>
 
-  <ol class="projects">
+  <main class="stack">
+    <div class="sheet cover" aria-hidden="true"><canvas id="paths"></canvas></div>
+
+  <ol class="projects" id="projects">
   <!-- ADDING A PROJECT: insert one <li> between PROJECTS:START and PROJECTS:END, newest last.
      data-project = the Vercel project name. Same fields every time:
      <li class="project" data-project="VERCEL-PROJECT-NAME">
@@ -222,21 +329,6 @@
         <a class="visit" href="https://ib-aahl-probability-lab.vercel.app/?utm_source=projects-page">Open site</a>
       </div>
     </li>
-
-       <li class="project" data-project="Study Tracker">
-      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <path d="M8 68 L112 68"/>
-        <path d="M70 68 L70 38 C 76 54, 90 64, 104 66 L104 68 Z" class="fill-accent" stroke="none" opacity=".85"/>
-        <path d="M10 66 C 30 66, 42 60, 50 36 C 55 22, 65 22, 70 36 C 78 60, 90 66, 110 66"/>
-        <line x1="60" y1="68" x2="60" y2="24" stroke-dasharray="3 5" opacity=".5"/>
-      </svg>
-      <div>
-        <h2><a href="..."></a></h2>
-        <p><strong>Why I built it.</strong> Personally, studying has always been a matter of discipline, making myself sit at a desk to review and memorise items. To make it both easier to get started with and be consistent I built a tracker that natively on my computer allows me to keep track of everything.</p>
-        <p><strong>What it does.</strong> Allows students to have a hub where everything study related combined into one spot, to ease the pain of studying.</p>
-        <a class="visit" href="...">Open site</a>
-      </div>
-    </li>
     <li class="project" data-project="study-tracker">
       <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <rect x="14" y="8" width="56" height="64" rx="3"/>
@@ -248,8 +340,8 @@
       </svg>
       <div>
         <h2><a href="https://gerald-study-tracker.vercel.app/?utm_source=projects-page">Study Tracker</a></h2>
-        <p><strong>Why I built it.</strong> I wanted all my IB study in one place: what to do, when to do it, and how much I've actually done.</p>
-        <p><strong>What it does.</strong> Logs study time by subject, schedules tasks on a daily planner and a task board, and keeps flashcards, deadlines and study documents together.</p>
+        <p><strong>Why I built it.</strong> Personally, studying has always been a matter of discipline, making myself sit at a desk to review and memorise items. To make it both easier to get started with and be consistent I built a tracker that natively on my computer allows me to keep track of everything.</p>
+        <p><strong>What it does.</strong> Allows students to have a hub where everything study related combined into one spot, to ease the pain of studying.</p>
         <a class="visit" href="https://gerald-study-tracker.vercel.app/?utm_source=projects-page">Open site</a>
         <a class="visit" href="https://github.com/geraldchen56-droid/study-tracker">Code on GitHub</a>
       </div>
@@ -257,16 +349,31 @@
 
   <!-- PROJECTS:END -->
   </ol>
+  </main>
+</div>
 
-  <section class="about" aria-labelledby="about-h">
-    <h2 id="about-h">About me</h2>
-    <p>I'm Gerald, an IB Diploma student who likes economics and maths. I build small sites to understand things properly: how options are priced, how probability really works, and why people make irrational choices. Everything on this page is something I made, and I keep adding to it.</p>
-  </section>
-
-  <footer>
-    <p>This page counts visits with Vercel Web Analytics, which does not use cookies. PS: A lot of my inspiration comes from staring into my ceiling with the music on, give it a try, creativity feels rare in the age of AI.</p>
-  </footer>
-</main>
+<script>
+/* Light / dark toggle. The choice is remembered on this device when storage is available. */
+(function () {
+  var root = document.documentElement;
+  var btn = document.getElementById('theme-toggle');
+  var meta = document.querySelector('meta[name="theme-color"]');
+  function paint() {
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+    btn.querySelector('.label').textContent = dark ? 'Light mode' : 'Dark mode';
+    if (meta) meta.setAttribute('content', dark ? '#171411' : '#ECE6DF');
+  }
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+    paint();
+    document.dispatchEvent(new Event('themechange'));
+  });
+  paint();
+})();
+</script>
 
 <script>
 /* Hero: a fan of random price paths, drawn once on load.
@@ -309,19 +416,23 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
+  function col(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  var last = 1;
   function draw(progress) {
+    last = progress;
+    var faint = col('--path'), hotc = col('--accent');
     ctx.clearRect(0, 0, W, H);
     var vol = H * 0.014, mid = H / 2;
     var upto = Math.max(1, Math.floor(progress * STEPS));
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = 'rgba(16, 28, 54, 0.2)';
+    ctx.strokeStyle = faint;
     ctx.lineWidth = 1;
     ctx.setLineDash([4, 6]);
     ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(W, mid); ctx.stroke();
     ctx.setLineDash([]);
     for (var i = 0; i < N; i++) {
       var hot = i % 8 === 0;
-      ctx.strokeStyle = hot ? 'rgba(35, 66, 232, 0.85)' : 'rgba(16, 28, 54, 0.2)';
+      ctx.strokeStyle = hot ? hotc : faint;
       ctx.lineWidth = hot ? 1.8 : 1;
       ctx.beginPath();
       var y = mid;
@@ -345,6 +456,7 @@
   size();
   if (reduce) draw(1); else requestAnimationFrame(frame);
   window.addEventListener('resize', function () { size(); draw(1); });
+  document.addEventListener('themechange', function () { draw(last); });
 })();
 </script>
 
@@ -353,6 +465,5 @@
   window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
-<!-- edit me: push to main to redeploy -->
 </body>
 </html>
