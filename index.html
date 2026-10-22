@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gerald Chen: Projects</title>
+<meta name="description" content="Five things Gerald Chen has built to learn, practise and write: a journal, a behavioural economics blog, an option-pricing simulation, an IB probability guide and trading-interview games.">
+<meta property="og:title" content="Gerald Chen: Projects">
+<meta property="og:description" content="A journal, a behavioural economics blog, a Monte Carlo option pricer, an IB probability guide and trading-interview games.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#EDF0F4">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EDF0F4;
+    --grid: #DCE2EA;
+    --rule: #C3CCD8;
+    --ink: #101C36;
+    --ink-soft: #4A5873;
+    --cobalt: #2342E8;
+    --marker: #FFE066;
+    --head: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+
+  /* Hero */
+  .hero { padding: 64px 0 8px; }
+  .name { font-family: var(--head); font-weight: 500; font-size: 18px; margin: 0 0 14px; color: var(--ink-soft); }
+  .hero h1 {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: clamp(34px, 7vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 0;
+    max-width: 14em;
+  }
+  .hero .lede { margin: 20px 0 0; max-width: 34em; color: var(--ink-soft); }
+  #paths { display: block; width: 100%; height: 200px; margin-top: 28px; }
+
+  /* Project rows */
+  .projects { margin: 24px 0 0; padding: 0; list-style: none; }
+  .project {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+    padding: 40px 0 44px;
+    border-top: 1px solid var(--rule);
+  }
+  .fig { width: 120px; height: 80px; color: var(--ink); }
+  .fig .accent { stroke: var(--cobalt); }
+  .fig .fill-accent { fill: var(--cobalt); }
+  .project h2 {
+    font-family: var(--head);
+    font-weight: 700;
+    font-size: clamp(24px, 4vw, 32px);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 14px;
+  }
+  .project h2 a {
+    color: inherit;
+    text-decoration: none;
+    background-image: linear-gradient(var(--marker), var(--marker));
+    background-repeat: no-repeat;
+    background-position: 0 88%;
+    background-size: 0% 38%;
+    transition: background-size 180ms ease;
+  }
+  .project h2 a:hover, .project h2 a:focus-visible { background-size: 100% 38%; }
+  .project p { margin: 0 0 10px; max-width: 60ch; }
+  .project p strong { font-family: var(--head); font-weight: 700; font-size: 0.95em; }
+  .visit { display: inline-block; margin-top: 8px; font-family: var(--head); font-weight: 500; color: var(--cobalt); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+  .visit:hover { color: var(--ink); }
+  .visit + .visit { margin-left: 20px; }
+  .soon { display: inline-block; margin-top: 8px; font-family: var(--head); font-weight: 500; color: var(--ink-soft); }
+
+  a:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 3px; border-radius: 2px; }
+
+  footer { border-top: 1px solid var(--rule); padding: 28px 0 56px; color: var(--ink-soft); font-size: 15px; }
+  footer p { margin: 0; max-width: 60ch; }
+
+  @media (max-width: 620px) {
+    body { font-size: 17px; }
+    .hero { padding-top: 44px; }
+    #paths { height: 150px; }
+    .project { grid-template-columns: 1fr; gap: 16px; padding: 32px 0 36px; }
+    .fig { width: 96px; height: 64px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project h2 a { transition: none; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="hero">
+    <p class="name">Gerald Chen</p>
+    <h1>Things I've built to learn, practise and write.</h1>
+    <p class="lede">Five projects, all live. Each one has a short note on why I made it and what it does.</p>
+    <canvas id="paths" aria-hidden="true"></canvas>
+  </header>
+
+  <ol class="projects">
+  <!-- ADDING A PROJECT: insert one <li> between PROJECTS:START and PROJECTS:END, newest last.
+     data-project = the Vercel project name. Same fields every time:
+     <li class="project" data-project="VERCEL-PROJECT-NAME">
+       <svg class="fig" ...120x80 line-art figure for this project...</svg>
+       <div>
+         <h2><a href="LINK?utm_source=projects-page">Project title</a></h2>
+         <p><strong>Why I built it.</strong> One sentence, first person.</p>
+         <p><strong>What it does.</strong> One sentence.</p>
+         <a class="visit" href="LINK?utm_source=projects-page">Open site</a>
+       (optional) <a class="visit" href="GITHUB-URL">Code on GitHub</a>
+       </div>
+     </li>
+     Analytics links are private and are NOT shown on this page. -->
+  <!-- PROJECTS:START -->
+
+    <!-- 1. Journal -->
+    <li class="project" data-project="the-healing-pages">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <rect x="22" y="6" width="76" height="68" rx="3"/>
+        <line class="accent" x1="38" y1="6" x2="38" y2="74"/>
+        <line x1="46" y1="24" x2="88" y2="24"/>
+        <line x1="46" y1="38" x2="88" y2="38"/>
+        <line x1="46" y1="52" x2="72" y2="52"/>
+        <path class="accent" d="M76 60 l10 -10"/>
+      </svg>
+      <div>
+        <h2><a href="https://the-healing-pages.vercel.app/?utm_source=projects-page">The Healing Pages</a></h2>
+        <p><strong>Why I built it.</strong> I wanted a quiet place to write one small page a day, and to hear it back by reading it aloud.</p>
+        <p><strong>What it does.</strong> A daily journal that tracks your streak, pages and word count, shows a calendar of what you've written, and has a recite mode for reading a page out loud.</p>
+        <a class="visit" href="https://the-healing-pages.vercel.app/?utm_source=projects-page">Open site</a>
+      </div>
+    </li>
+
+    <!-- 2. Blog -->
+    <li class="project" data-project="psych-eco-blog">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M8 66 L112 66"/>
+        <path d="M14 62 C40 56, 62 30, 106 14"/>
+        <path class="accent" d="M14 20 C44 24, 66 48, 106 58"/>
+        <circle class="fill-accent" cx="60" cy="40" r="5" stroke="none"/>
+      </svg>
+      <div>
+        <h2><a href="https://eco-psych-blog-app.vercel.app/?utm_source=projects-page">The Irrational Margin</a></h2>
+        <p><strong>Why I built it.</strong> I wanted to write about why people decide the way they do, and what it costs them.</p>
+        <p><strong>What it does.</strong> A blog of essays on behavioural economics, where psychology meets the way people spend, save and choose.</p>
+        <a class="visit" href="https://eco-psych-blog-app.vercel.app/?utm_source=projects-page">Open site</a>
+      </div>
+    </li>
+
+    <!-- 3. Monte Carlo -->
+    <li class="project" data-project="root-t">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 40 L24 36 L40 42 L56 30 L72 34 L88 22 L112 16" opacity=".35"/>
+        <path d="M8 40 L24 44 L40 38 L56 50 L72 44 L88 56 L112 62" opacity=".35"/>
+        <path d="M8 40 L24 40 L40 48 L56 44 L72 54 L88 48 L112 46" opacity=".35"/>
+        <path d="M8 40 L24 34 L40 28 L56 36 L72 26 L88 30 L112 30" opacity=".35"/>
+        <path class="accent" stroke-width="2.4" d="M8 40 L24 42 L40 34 L56 38 L72 30 L88 40 L112 34"/>
+      </svg>
+      <div>
+        <h2><a href="https://root-t.vercel.app/?utm_source=projects-page">Root T</a></h2>
+        <p><strong>Why I built it.</strong> I wanted to understand how options are priced, not just memorise the formula.</p>
+        <p><strong>What it does.</strong> Prices a European call option with 100,000 random simulations, then compares the result live against the Black-Scholes formula across 40 strikes and 20 maturities.</p>
+        <a class="visit" href="https://root-t.vercel.app/?utm_source=projects-page">Open site</a>
+        <a class="visit" href="https://github.com/geraldchen56-droid/option-pricer">Code on GitHub</a>
+      </div>
+    </li>
+
+    <!-- 4. IB Probability Lab -->
+    <li class="project" data-project="ib-aahl-probability-lab">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path d="M8 68 L112 68"/>
+        <path d="M70 68 L70 38 C 76 54, 90 64, 104 66 L104 68 Z" class="fill-accent" stroke="none" opacity=".85"/>
+        <path d="M10 66 C 30 66, 42 60, 50 36 C 55 22, 65 22, 70 36 C 78 60, 90 66, 110 66"/>
+        <line x1="60" y1="68" x2="60" y2="24" stroke-dasharray="3 5" opacity=".5"/>
+      </svg>
+      <div>
+        <h2><a href="https://ib-aahl-probability-lab.vercel.app/?utm_source=projects-page">IB Probability Lab</a></h2>
+        <p><strong>Why I built it.</strong> I wanted to revise IB Maths AA probability properly, and give other students on the course something better than a page of formulas.</p>
+        <p><strong>What it does.</strong> Covers every SL and HL probability topic with live models you can drag, Casio fx-CG50 and TI-84 keystrokes, and unlimited randomised practice questions with full working.</p>
+        <a class="visit" href="https://ib-aahl-probability-lab.vercel.app/?utm_source=projects-page">Open site</a>
+      </div>
+    </li>
+
+    <!-- 5. Edge Lab -->
+    <li class="project" data-project="edge-lab">
+      <svg class="fig" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <g transform="rotate(-9 44 42)">
+          <rect x="20" y="8" width="48" height="66" rx="5"/>
+          <path class="fill-accent" stroke="none" d="M44 28 L54 41 L44 54 L34 41 Z"/>
+        </g>
+        <g transform="rotate(10 78 42)">
+          <rect x="54" y="8" width="48" height="66" rx="5" fill="var(--paper)"/>
+          <circle class="accent" cx="78" cy="41" r="10"/>
+        </g>
+      </svg>
+      <div>
+        <h2><a href="https://edgelab-games.vercel.app/?utm_source=projects-page">Edge Lab</a></h2>
+        <p><strong>Why I built it.</strong> I'm interested in trading, and I wanted somewhere to practise the probability and mental maths that trading interviews test.</p>
+        <p><strong>What it does.</strong> Interactive games for trading-interview prep: market making, ETF arbitrage, Bayes, Kelly sizing and a poker room, plus a Daily Gauntlet with a leaderboard.</p>
+        <a class="visit" href="https://edgelab-games.vercel.app/?utm_source=projects-page">Open site</a>
+      </div>
+    </li>
+
+  <!-- PROJECTS:END -->
+  </ol>
+
+  <footer>
+    <p>This page counts visits with Vercel Web Analytics, which does not use cookies.</p>
+  </footer>
+</main>
+
+<script>
+/* Hero: a fan of random price paths, drawn once on load.
+   Static when the visitor prefers reduced motion. */
+(function () {
+  var canvas = document.getElementById('paths');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var N = 48, STEPS = 120;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  var rand = rng(2026);
+  function gauss() {
+    var u = 0, v = 0;
+    while (u === 0) u = rand();
+    while (v === 0) v = rand();
+    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+  var steps = [];
+  for (var i = 0; i < N; i++) {
+    var s = [];
+    for (var j = 0; j < STEPS; j++) s.push(gauss());
+    steps.push(s);
+  }
+
+  var W = 0, H = 0, dpr = 1, start = null;
+
+  function size() {
+    dpr = window.devicePixelRatio || 1;
+    W = canvas.clientWidth; H = canvas.clientHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function draw(progress) {
+    ctx.clearRect(0, 0, W, H);
+    var vol = H * 0.014, mid = H / 2;
+    var upto = Math.max(1, Math.floor(progress * STEPS));
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(16, 28, 54, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(W, mid); ctx.stroke();
+    ctx.setLineDash([]);
+    for (var i = 0; i < N; i++) {
+      var hot = i % 8 === 0;
+      ctx.strokeStyle = hot ? 'rgba(35, 66, 232, 0.85)' : 'rgba(16, 28, 54, 0.2)';
+      ctx.lineWidth = hot ? 1.8 : 1;
+      ctx.beginPath();
+      var y = mid;
+      ctx.moveTo(0, y);
+      for (var k = 0; k < upto; k++) {
+        y += steps[i][k] * vol;
+        ctx.lineTo(((k + 1) / STEPS) * W, y);
+      }
+      ctx.stroke();
+    }
+  }
+
+  function frame(ts) {
+    if (start === null) start = ts;
+    var p = Math.min(1, (ts - start) / 2400);
+    var eased = 1 - Math.pow(1 - p, 3);
+    draw(eased);
+    if (p < 1) requestAnimationFrame(frame);
+  }
+
+  size();
+  if (reduce) draw(1); else requestAnimationFrame(frame);
+  window.addEventListener('resize', function () { size(); draw(1); });
+})();
+</script>
+
+<!-- Vercel Web Analytics (enable it for this project under Analytics in the Vercel dashboard) -->
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
