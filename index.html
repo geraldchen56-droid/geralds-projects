@@ -132,7 +132,7 @@
     color: var(--sheet-ink);
     transition: background-color 300ms ease, color 300ms ease;
   }
-  .cover { top: 32px; width: 80%; height: min(72vh, 720px); margin-bottom: 18vh; }
+  .cover { overflow: hidden; top: 32px; width: 80%; height: min(72vh, 720px); margin-bottom: 18vh; }
   #paths { display: block; width: 100%; height: 100%; }
 
   ol.projects { list-style: none; margin: 0; padding: 0; }
@@ -458,6 +458,192 @@
   window.addEventListener('resize', function () { size(); draw(1); });
   document.addEventListener('themechange', function () { draw(last); });
 })();
+</script>
+
+<!-- 3D cover: Monte Carlo price paths fanned out in depth, with the terminal
+     distribution drawn as a translucent ribbon at the end. Falls back to the
+     2D drawing above if WebGL or the CDN is unavailable. -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+
+const host = document.querySelector('.cover');
+const flat = document.getElementById('paths');
+if (!host) throw new Error('no cover');
+
+const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'low-power' });
+} catch (e) { throw e; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+const canvas = renderer.domElement;
+canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y;';
+if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+host.appendChild(canvas);
+flat.style.visibility = 'hidden';
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
+const world = new THREE.Group();
+scene.add(world);
+
+/* ---- simulate paths (seeded, so the picture is the same every visit) ---- */
+function rng(seed) { return function () { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+const rand = rng(2026);
+const gauss = () => { let u = 0, v = 0; while (!u) u = rand(); while (!v) v = rand(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+
+const N = 72, STEPS = 180, LEN = 12, DEPTH = 7, VOL = 0.115;
+const paths = [];
+for (let i = 0; i < N; i++) {
+  const z = (i / (N - 1) - 0.5) * DEPTH;
+  const pts = [];
+  let y = 0;
+  for (let k = 0; k <= STEPS; k++) {
+    if (k) y += gauss() * VOL;
+    pts.push(-LEN / 2 + (k / STEPS) * LEN, y, z);
+  }
+  paths.push({ pts, hot: i % 9 === 4, final: y });
+}
+
+/* ---- lines ---- */
+const faintMats = [], hotMats = [];
+const lines = [];
+for (const p of paths) {
+  const g = new LineGeometry();
+  g.setPositions(p.pts);
+  const m = new LineMaterial({ linewidth: p.hot ? 2.2 : 0.9, transparent: true, opacity: p.hot ? 0.95 : 0.28, depthWrite: false, worldUnits: false });
+  (p.hot ? hotMats : faintMats).push(m);
+  const l = new Line2(g, m);
+  l.computeLineDistances();
+  l.renderOrder = p.hot ? 2 : 1;
+  world.add(l);
+  lines.push({ l, g, total: STEPS });
+}
+
+/* ---- terminal distribution ribbon at the end plane ---- */
+const finals = paths.map(p => p.final);
+const mean = finals.reduce((a, b) => a + b, 0) / N;
+const sd = Math.sqrt(finals.reduce((a, b) => a + (b - mean) ** 2, 0) / N) || 1;
+const ys = [], dens = [];
+for (let j = 0; j <= 80; j++) {
+  const y = mean - 3.2 * sd + (j / 80) * 6.4 * sd;
+  let d = 0; for (const f of finals) { const u = (y - f) / (0.45 * sd); d += Math.exp(-0.5 * u * u); }
+  ys.push(y); dens.push(d);
+}
+const dmax = Math.max(...dens);
+const shape = new THREE.Shape();
+shape.moveTo(0, ys[0]);
+ys.forEach((y, j) => shape.lineTo((dens[j] / dmax) * 2.1, y));
+shape.lineTo(0, ys[ys.length - 1]);
+const ribbonMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.16, side: THREE.DoubleSide, depthWrite: false });
+const ribbon = new THREE.Mesh(new THREE.ShapeGeometry(shape), ribbonMat);
+ribbon.position.set(LEN / 2 + 0.05, 0, 0);
+ribbon.rotation.y = -Math.PI / 2;
+world.add(ribbon);
+const outlinePts = [];
+ys.forEach((y, j) => outlinePts.push(0, y, (dens[j] / dmax) * 2.1));
+const outlineGeo = new LineGeometry(); outlineGeo.setPositions(outlinePts);
+const outlineMat = new LineMaterial({ linewidth: 1.6, transparent: true, opacity: 0.9, worldUnits: false });
+const outline = new Line2(outlineGeo, outlineMat);
+outline.position.set(LEN / 2 + 0.05, 0, 0);
+world.add(outline);
+
+/* ---- quiet floor grid + start marker ---- */
+const gridMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.08 });
+const gridGeo = new THREE.BufferGeometry();
+const gp = [], floorY = mean - 3.4 * sd;
+for (let i = 0; i <= 12; i++) { const x = -LEN / 2 + (i / 12) * LEN; gp.push(x, floorY, -DEPTH / 2, x, floorY, DEPTH / 2); }
+for (let i = 0; i <= 6; i++) { const z = -DEPTH / 2 + (i / 6) * DEPTH; gp.push(-LEN / 2, floorY, z, LEN / 2, floorY, z); }
+gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gp, 3));
+world.add(new THREE.LineSegments(gridGeo, gridMat));
+
+const axisMat = new THREE.LineDashedMaterial({ transparent: true, opacity: 0.35, dashSize: 0.12, gapSize: 0.16 });
+const axisGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-LEN / 2, 0, -DEPTH / 2), new THREE.Vector3(-LEN / 2, 0, DEPTH / 2)]);
+const axis = new THREE.Line(axisGeo, axisMat); axis.computeLineDistances(); world.add(axis);
+
+world.position.y = -mean * 0.5;
+
+/* ---- colours follow the light / dark theme ---- */
+function applyTheme() {
+  const bg = new THREE.Color(css('--sheet-1') || '#E3DCD2');
+  const ink = new THREE.Color(css('--sheet-ink') || '#2B2620');
+  const acc = new THREE.Color(css('--accent') || '#8A755B');
+  scene.background = bg;
+  scene.fog = new THREE.Fog(bg, 15, 30);
+  faintMats.forEach(m => m.color.copy(ink));
+  hotMats.forEach(m => m.color.copy(acc));
+  ribbonMat.color.copy(acc); outlineMat.color.copy(acc);
+  gridMat.color.copy(ink); axisMat.color.copy(ink);
+}
+applyTheme();
+document.addEventListener('themechange', () => { applyTheme(); needs = true; });
+
+/* ---- size ---- */
+function resize() {
+  const w = host.clientWidth, h = host.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  const res = new THREE.Vector2(w, h);
+  [...faintMats, ...hotMats, outlineMat].forEach(m => m.resolution.copy(res));
+  needs = true;
+}
+let needs = true;
+new ResizeObserver(resize).observe(host);
+
+/* ---- interaction: drag to turn, gentle drift otherwise ---- */
+let yaw = -0.62, pitch = 0.32, tYaw = yaw, tPitch = pitch, dragging = false, lx = 0, ly = 0, idle = 0;
+canvas.addEventListener('pointerdown', e => { dragging = true; lx = e.clientX; ly = e.clientY; canvas.setPointerCapture(e.pointerId); canvas.style.cursor = 'grabbing'; });
+canvas.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  tYaw += (e.clientX - lx) * 0.006; tPitch = Math.max(0.05, Math.min(0.9, tPitch + (e.clientY - ly) * 0.004));
+  lx = e.clientX; ly = e.clientY; idle = 0; needs = true;
+});
+const end = () => { dragging = false; canvas.style.cursor = 'grab'; };
+canvas.addEventListener('pointerup', end); canvas.addEventListener('pointercancel', end);
+
+/* ---- render loop (paused when off screen) ---- */
+let visible = true, start = null, last = 0;
+new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible) requestAnimationFrame(loop); }, { threshold: 0 }).observe(host);
+
+function place() {
+  const r = 25 + (camera.aspect < 0.9 ? 8 : 0);
+  camera.position.set(Math.sin(yaw) * Math.cos(pitch) * r, Math.sin(pitch) * r, Math.cos(yaw) * Math.cos(pitch) * r);
+  camera.lookAt(0.8, -0.2, 0);
+}
+
+function loop(ts) {
+  if (!visible) return;
+  if (start === null) start = ts;
+  const dt = Math.min(0.05, (ts - (last || ts)) / 1000); last = ts;
+  const grow = reduce ? 1 : Math.min(1, (ts - start) / 3200);
+  const eased = 1 - Math.pow(1 - grow, 3);
+  const count = Math.max(2, Math.floor(eased * STEPS) + 1);
+  for (const ln of lines) ln.g.instanceCount = count - 1;
+  ribbonMat.opacity = 0.16 * eased; outlineMat.opacity = 0.9 * eased;
+
+  if (!dragging && !reduce) { idle += dt; tYaw += Math.sin(idle * 0.25) * 0.0009 + 0.0007; }
+  const sy = reduce ? 0 : Math.min(window.scrollY, 1500) * 0.0005;
+  yaw += (tYaw + sy - yaw) * 0.08; pitch += (tPitch - pitch) * 0.08;
+  place();
+  renderer.render(scene, camera);
+  if (!reduce || grow < 1 || dragging || needs) { needs = false; requestAnimationFrame(loop); }
+}
+resize(); place();
+requestAnimationFrame(loop);
+if (reduce) document.addEventListener('pointermove', () => requestAnimationFrame(loop));
 </script>
 
 <!-- Vercel Web Analytics (enable it for this project under Analytics in the Vercel dashboard) -->
