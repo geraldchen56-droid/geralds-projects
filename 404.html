@@ -5,7 +5,7 @@
 <meta name="description" content="A project by Gerald Chen.">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#615847">
+<meta name="theme-color" content="#46441C">
 <script>
   /* Olive and gold by default; apply a saved light choice before paint. */
   (function () {
@@ -27,7 +27,7 @@
   <p class="lbl"><a href="/" aria-label="Gerald Chen, all projects"><span>Gerald</span><span>Chen</span></a></p>
   <a class="mono" href="/" aria-hidden="true" tabindex="-1">G.c.</a>
   <nav class="lbl nav" aria-label="Site">
-    <a href="/#work">Projects</a>
+    <button class="btn-text" type="button" data-about-open aria-haspopup="dialog">About</button>
     <a href="https://github.com/geraldchen56-droid" target="_blank" rel="noopener">GitHub</a>
   </nav>
   <div class="clock-wrap">
@@ -39,9 +39,26 @@
 <main id="main"><div id="case"></div></main>
 <footer class="site-foot grid">
   <p class="lbl"><span>Gerald Chen</span><span>&copy; 2026</span></p>
-  <p class="lbl mid"><span>Visits are counted with Vercel Web Analytics,</span><span>which does not use cookies.</span></p>
+  <p class="lbl mid ps">PS: A lot of my inspiration comes from staring into my ceiling with the music on, give it a try, creativity feels rare in the age of AI.</p>
   <p class="lbl"><a href="#top">Back to top</a></p>
 </footer>
+
+<dialog class="about" id="about" aria-labelledby="about-title">
+  <div class="site-head grid">
+    <p class="lbl"><span>Gerald</span><span>Chen</span></p>
+    <span class="mono" aria-hidden="true">G.c.</span>
+    <div class="lbl nav"><button class="btn-text" type="button" data-about-close>Close</button></div>
+  </div>
+  <div class="about-body grid">
+    <h2 id="about-title">about</h2>
+    <div class="txt">
+      <p>I'm Gerald, an IB Diploma student who likes economics and maths. I build small sites to understand things properly: how options are priced, how probability really works, and why people make irrational choices. Everything on this page is something I made, and I keep adding to it.</p>
+      <p>Each one has a short note on why I made it and what it does. Note: All of these apps were made with AI assistance (namely Claude), where I write thousands of lines of code then get AI to go through and correct mistakes, I then go through changes and decide if I like the direction that it takes.</p>
+      <p>Built to understand things properly, in a way that rotates the frame of knowledge. Learning with you instead of at you.</p>
+      <p class="small">This page counts visits with Vercel Web Analytics, which does not use cookies. Cover footage is free stock video from Mixkit.</p>
+    </div>
+  </div>
+</dialog>
 <script src="/assets/projects.js"></script>
 <script src="/assets/site.js"></script>
 <script>

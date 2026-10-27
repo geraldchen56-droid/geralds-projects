@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#615847">
+<meta name="theme-color" content="#46441C">
 <script>
   /* Olive and gold by default; apply a saved light choice before paint. */
   (function () {
@@ -30,7 +30,7 @@
   <p class="lbl"><a href="/" aria-label="Gerald Chen, all projects"><span>Gerald</span><span>Chen</span></a></p>
   <a class="mono" href="/" aria-hidden="true" tabindex="-1">G.c.</a>
   <nav class="lbl nav" aria-label="Site">
-    <a href="/#work">Projects</a>
+    <button class="btn-text" type="button" data-about-open aria-haspopup="dialog">About</button>
     <a href="https://github.com/geraldchen56-droid" target="_blank" rel="noopener">GitHub</a>
   </nav>
   <div class="clock-wrap">
@@ -41,34 +41,42 @@
 
 <main id="main">
   <section class="home-hero grid">
-    <div class="intro reveal" style="--d:2">
-      <p>I'm Gerald, an IB Diploma student who likes economics and maths. I build small sites to understand things properly: how options are priced, how probability really works, and why people make irrational choices. Everything on this page is something I made, and I keep adding to it.</p>
-    </div>
-    <div class="ai reveal" style="--d:3">
-      <p>Each one has a short note on why I made it and what it does. Note: All of these apps were made with AI assistance (namely Claude), where I write thousands of lines of code then get AI to go through and correct mistakes, I then go through changes and decide if I like the direction that it takes.</p>
-    </div>
-    <h1 class="reveal" style="--d:0">Things I&rsquo;ve built to learn, practise and write. Learning with you instead of at you.</h1>
-    <p class="tag reveal" style="--d:1">PS: A lot of my inspiration comes from staring into my ceiling with the music on, give it a try, creativity feels rare in the age of AI.</p>
+    <h1 class="reveal">Things I&rsquo;ve built to learn, practise and write.</h1>
   </section>
 
   <section class="strip-wrap reveal" style="--d:3" id="work" aria-label="Projects">
     <div class="strip" id="strip" tabindex="0" aria-label="Projects, scroll sideways"></div>
     <noscript><p class="lbl" style="padding:0 16px">Turn on JavaScript to see the projects.</p></noscript>
     <div class="strip-foot grid">
-      <p class="lbl count-wrap"><span><span class="count" id="count">01</span> / <span id="total">10</span></span><span>Drag, scroll or use the arrow keys</span></p>
-      <p class="lbl foot-note">Built to understand things properly, in a way that rotates the frame of knowledge.</p>
       <div class="ctrl">
-        <button class="btn-round" id="prev" type="button" aria-label="Previous project">&larr;</button>
-        <button class="btn-round" id="next" type="button" aria-label="Next project">&rarr;</button>
+        <button class="btn-round" id="prev" type="button" aria-label="Previous projects">&larr;</button>
+        <button class="btn-round" id="next" type="button" aria-label="Next projects">&rarr;</button>
       </div>
     </div>
   </section>
 </main>
 <footer class="site-foot grid">
   <p class="lbl"><span>Gerald Chen</span><span>&copy; 2026</span></p>
-  <p class="lbl mid"><span>Visits are counted with Vercel Web Analytics,</span><span>which does not use cookies.</span></p>
+  <p class="lbl mid ps">PS: A lot of my inspiration comes from staring into my ceiling with the music on, give it a try, creativity feels rare in the age of AI.</p>
   <p class="lbl"><a href="#top">Back to top</a></p>
 </footer>
+
+<dialog class="about" id="about" aria-labelledby="about-title">
+  <div class="site-head grid">
+    <p class="lbl"><span>Gerald</span><span>Chen</span></p>
+    <span class="mono" aria-hidden="true">G.c.</span>
+    <div class="lbl nav"><button class="btn-text" type="button" data-about-close>Close</button></div>
+  </div>
+  <div class="about-body grid">
+    <h2 id="about-title">about</h2>
+    <div class="txt">
+      <p>I'm Gerald, an IB Diploma student who likes economics and maths. I build small sites to understand things properly: how options are priced, how probability really works, and why people make irrational choices. Everything on this page is something I made, and I keep adding to it.</p>
+      <p>Each one has a short note on why I made it and what it does. Note: All of these apps were made with AI assistance (namely Claude), where I write thousands of lines of code then get AI to go through and correct mistakes, I then go through changes and decide if I like the direction that it takes.</p>
+      <p>Built to understand things properly, in a way that rotates the frame of knowledge. Learning with you instead of at you.</p>
+      <p class="small">This page counts visits with Vercel Web Analytics, which does not use cookies. Cover footage is free stock video from Mixkit.</p>
+    </div>
+  </div>
+</dialog>
 <script src="/assets/projects.js"></script>
 <script src="/assets/site.js"></script>
 <script>
