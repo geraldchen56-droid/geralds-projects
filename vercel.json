@@ -3,43 +3,43 @@
   "rewrites": [
     {
       "source": "/edge-lab",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/root-t",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/irrational-margin",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/healing-pages",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/probability-lab",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/study-tracker",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/mahjong",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/nuclear",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/ib-planner",
-      "destination": "/project.html"
+      "destination": "/project"
     },
     {
       "source": "/equilibrium",
-      "destination": "/project.html"
+      "destination": "/project"
     }
   ]
 }
