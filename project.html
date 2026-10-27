@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" id="top">
+<head>
+<title>Project: Gerald Chen</title>
+<meta name="description" content="A project by Gerald Chen.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#615847">
+<script>
+  /* Olive and gold by default; apply a saved light choice before paint. */
+  (function () {
+    var t = null;
+    try { t = localStorage.getItem('gp-theme'); } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 rx=%2232%22 fill=%22%23615847%22/%3E%3Ctext x=%2232%22 y=%2242%22 font-family=%22Georgia%22 font-style=%22italic%22 font-size=%2230%22 fill=%22%23F4CD5C%22 text-anchor=%22middle%22%3EGc%3C/text%3E%3C/svg%3E">
+
+</head>
+<body>
+<a class="skip lbl" href="#main" style="position:absolute;left:-9999px">Skip to content</a>
+<header class="site-head grid">
+  <p class="lbl"><a href="/" aria-label="Gerald Chen, all projects"><span>Gerald</span><span>Chen</span></a></p>
+  <a class="mono" href="/" aria-hidden="true" tabindex="-1">G.c.</a>
+  <nav class="lbl nav" aria-label="Site">
+    <a href="/#work">Projects</a>
+    <a href="https://github.com/geraldchen56-droid" target="_blank" rel="noopener">GitHub</a>
+  </nav>
+  <div class="clock-wrap">
+    <p class="lbl"><span>Shanghai</span><time class="clock" id="clock">--:--</time></p>
+    <button class="theme" id="theme" type="button" aria-pressed="false" aria-label="Switch to light mode"><i></i></button>
+  </div>
+</header>
+
+<main id="main"><div id="case"></div></main>
+<footer class="site-foot grid">
+  <p class="lbl"><span>Gerald Chen</span><span>&copy; 2026</span></p>
+  <p class="lbl mid"><span>Visits are counted with Vercel Web Analytics,</span><span>which does not use cookies.</span></p>
+  <p class="lbl"><a href="#top">Back to top</a></p>
+</footer>
+<script src="/assets/projects.js"></script>
+<script src="/assets/site.js"></script>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
