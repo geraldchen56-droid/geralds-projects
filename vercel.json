@@ -18,7 +18,7 @@
       "destination": "/project"
     },
     {
-      "source": "/probability-lab",
+      "source": "/ib-aahl-lab",
       "destination": "/project"
     },
     {
@@ -40,6 +40,13 @@
     {
       "source": "/equilibrium",
       "destination": "/project"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/probability-lab",
+      "destination": "/ib-aahl-lab",
+      "permanent": true
     }
   ]
 }

@@ -59,15 +59,15 @@ window.PROJECTS = [
     what: "A daily journal that tracks your streak, pages and word count, shows a calendar of what you've written, and has a recite mode for reading a page out loud."
   },
   {
-    slug: "probability-lab",
-    name: "IB Probability Lab",
-    title: "ib probability lab",
-    kind: "IB Maths AA revision",
+    slug: "ib-aahl-lab",
+    name: "IB AA HL Lab",
+    title: "ib aa hl lab",
+    kind: "IB Maths AA HL revision",
     year: "2026",
-    url: "https://ib-aahl-probability-lab.vercel.app/",
+    url: "https://ib-aahl-lab.vercel.app/",
     code: "",
-    why: "I wanted to revise IB Maths AA probability properly, and give other students on the course something better than a page of formulas. Mainly it's formatted towards my way of learning one of the most annoying and knowledge based topics in AAHL, unlike calculus where the application of formulas will get the answer. (I will be adding more math topics one by one, starting out with the ones I consider the hardest; Vectors, Differential Equations.)",
-    what: "Covers every SL and HL probability (for now) topic with live models you can drag, Casio fx-CG50 and TI-84 keystrokes, and unlimited randomised practice questions with full working."
+    why: "I wanted to revise IB Maths AA probability properly, and give other students on the course something better than a page of formulas. Mainly it's formatted towards my way of learning one of the most annoying and knowledge based topics in AAHL, unlike calculus where the application of formulas will get the answer. It started as a probability-only site; I've since been adding the rest of the course one unit at a time, starting with the ones I find hardest, and renamed it once it outgrew probability.",
+    what: "Units on Probability, Vectors, Differential Equations and Proof, each with live models you can drag, exam-style worked examples with mark schemes, Casio fx-CG50 and TI-84 keystrokes, and unlimited randomised practice questions with full working."
   },
   {
     slug: "study-tracker",
