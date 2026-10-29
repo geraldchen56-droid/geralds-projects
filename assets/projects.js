@@ -42,7 +42,7 @@ window.PROJECTS = [
     title: "the irrational margin",
     kind: "Behavioural economics blog",
     year: "2026",
-    url: "https://eco-psych-blog-app.vercel.app/",
+    url: "https://the-irrational-margin.vercel.app/",
     code: "",
     why: "After learning about the assumptions within economics regarding “rationality” my interest piqued. Why did economists assume normal civillians make perfect decisions when it rarely happens? To enquire further into this and personally document my findings I developed this blog.",
     what: "A blog of essays on behavioural economics, where psychology meets the way people spend, save and choose."
