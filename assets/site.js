@@ -1,7 +1,6 @@
 /* Shared behaviour for the home page and the project pages. */
 (function () {
   var root = document.documentElement;
-  var P = window.PROJECTS || [];
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var UTM = 'utm_source=projects-page';
 
@@ -115,83 +114,128 @@
     about.addEventListener('close', function () { if (opener) opener.focus(); });
   }
 
-  /* Home: the strip of covers */
-  var strip = document.getElementById('strip');
-  if (strip) {
-    strip.innerHTML = P.map(function (p, i) {
-      return '<a class="card" href="/' + esc(p.slug) + '" aria-label="' + esc(p.name) + ', ' + esc(p.kind) + '">' +
-        '<p class="lbl">' + esc(p.name) + '</p>' +
+  /* Everything below comes from /projects.json: order, sections and card settings. */
+  function build(D) {
+    var S = D.settings || {};
+    var all = D.projects || [];
+    var bySlug = {};
+    all.forEach(function (p) { bySlug[p.slug] = p; });
+
+    /* Sections in file order; each lists its projects in file order.
+       Anything not placed in a section lands in "More" so nothing disappears. */
+    var placed = {};
+    var groups = (D.sections || []).map(function (s) {
+      var items = (s.projects || []).map(function (slug) {
+        if (!bySlug[slug]) { if (window.console) console.warn('projects.json: no project called "' + slug + '"'); return null; }
+        placed[slug] = true;
+        return bySlug[slug];
+      }).filter(Boolean);
+      return { id: s.id || '', title: s.title || '', note: s.note || '', items: items };
+    });
+    var rest = all.filter(function (p) { return !placed[p.slug]; });
+    if (rest.length) groups.push({ id: 'more', title: 'More', note: '', items: rest });
+    groups.forEach(function (g) { g.items = g.items.filter(function (p) { return !p.hidden; }); });
+    groups = groups.filter(function (g) { return g.items.length; });
+    groups.forEach(function (g, i) { g.num = pad(i + 1); if (!g.id) g.id = 'section-' + g.num; });
+
+    var order = [];
+    groups.forEach(function (g) { g.items.forEach(function (p) { order.push({ p: p, g: g }); }); });
+
+    function cardHtml(p, i) {
+      return '<a class="card' + (p.featured ? ' wide' : '') + '" href="/' + esc(p.slug) + '" aria-label="' + esc(p.name) + ', ' + esc(p.kind) + '">' +
+        '<div class="card-lbl lbl"><span>' + esc(p.name) + '</span>' +
+          (S.showKind !== false ? '<span class="kind">' + esc(p.kind) + '</span>' : '') +
+          (p.status ? '<span class="tag">' + esc(p.status) + '</span>' : '') +
+        '</div>' +
         mediaHtml(p, i < 5 ? 'eager' : 'lazy', false) +
         '</a>';
-    }).join('');
-
-    var prev = document.getElementById('prev');
-    var next = document.getElementById('next');
-
-    function step() {
-      var c = strip.querySelector('.card');
-      if (!c) return 1;
-      return c.getBoundingClientRect().width + parseFloat(getComputedStyle(strip).columnGap || 16);
     }
-    function sync() {
-      var max = strip.scrollWidth - strip.clientWidth;
-      if (prev) prev.disabled = strip.scrollLeft <= 2;
-      if (next) next.disabled = strip.scrollLeft >= max - 2;
+
+    /* Home */
+    var home = document.getElementById('home');
+    if (home) {
+      var per = Math.max(2, Math.min(4, parseInt(S.cardsPerRow, 10) || 4));
+      home.style.setProperty('--per', per);
+      var html = '';
+
+      if (S.outline !== false) {
+        html += '<nav class="outline grid reveal" style="--d:2" aria-label="Contents">' +
+          '<p class="lbl">Contents</p>' +
+          '<ol>' + groups.map(function (g) {
+            return '<li><a class="o-head" href="#' + esc(g.id) + '">' +
+                '<span class="lbl o-num">' + g.num + '</span>' +
+                '<span class="o-title">' + esc(g.title) + '</span>' +
+                '<span class="lbl o-count">' + g.items.length + '</span>' +
+              '</a>' +
+              '<p class="o-items lbl">' + g.items.map(function (p) {
+                return '<a href="/' + esc(p.slug) + '">' + esc(p.name) + '</a>';
+              }).join('') + '</p></li>';
+          }).join('') + '</ol>' +
+          '</nav>';
+      }
+
+      if (S.homeLayout === 'strip') {
+        html += '<section class="strip-wrap reveal" style="--d:3" aria-label="Projects">' +
+          '<div class="strip" id="strip" tabindex="0" aria-label="Projects, scroll sideways">' +
+            order.map(function (o, i) { return cardHtml(o.p, i); }).join('') +
+          '</div>' +
+          '<div class="strip-foot grid"><div class="ctrl">' +
+            '<button class="btn-round" id="prev" type="button" aria-label="Previous projects">&larr;</button>' +
+            '<button class="btn-round" id="next" type="button" aria-label="Next projects">&rarr;</button>' +
+          '</div></div></section>';
+      } else {
+        var n = 0;
+        html += groups.map(function (g) {
+          return '<section class="group" id="' + esc(g.id) + '" aria-labelledby="h-' + esc(g.id) + '">' +
+            '<header class="group-head grid">' +
+              '<p class="lbl">' + g.num + '</p>' +
+              '<h2 id="h-' + esc(g.id) + '">' + esc(g.title) + '</h2>' +
+              (g.note ? '<p class="note">' + esc(g.note) + '</p>' : '') +
+            '</header>' +
+            '<div class="cards">' + g.items.map(function (p) { return cardHtml(p, n++); }).join('') + '</div>' +
+            '</section>';
+        }).join('');
+      }
+
+      home.innerHTML = html;
+      var strip = document.getElementById('strip');
+      if (strip) wireStrip(strip);
+      wireHover(home);
+      if (location.hash) {
+        var target = document.getElementById(location.hash.slice(1));
+        if (target) target.scrollIntoView();
+      }
     }
-    function go(dir) {
-      strip.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' });
-    }
-    if (prev) prev.addEventListener('click', function () { go(-1); });
-    if (next) next.addEventListener('click', function () { go(1); });
-    strip.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
-    window.addEventListener('resize', sync);
-    document.addEventListener('keydown', function (e) {
-      if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
-      if (about && about.open) return;
-      if (e.key === 'ArrowRight') { go(1); }
-      if (e.key === 'ArrowLeft') { go(-1); }
-    });
 
-    /* Drag to scroll with a mouse; touch and trackpads scroll natively. */
-    var down = false, moved = false, sx = 0, sl = 0;
-    strip.addEventListener('pointerdown', function (e) {
-      if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      down = true; moved = false; sx = e.clientX; sl = strip.scrollLeft;
-    });
-    window.addEventListener('pointermove', function (e) {
-      if (!down) return;
-      var dx = e.clientX - sx;
-      if (!moved && Math.abs(dx) > 5) { moved = true; strip.classList.add('dragging'); }
-      if (moved) strip.scrollLeft = sl - dx;
-    });
-    window.addEventListener('pointerup', function () {
-      if (!down) return;
-      down = false;
-      setTimeout(function () { strip.classList.remove('dragging'); }, 0);
-    });
-    strip.addEventListener('click', function (e) { if (moved) { e.preventDefault(); moved = false; } }, true);
-    sync();
-    wireHover(strip);
-  }
+    /* Project page */
+    var caseRoot = document.getElementById('case');
+    if (caseRoot) {
+      var slug = (new URLSearchParams(location.search).get('p') ||
+        location.pathname.replace(/\/+$/, '').split('/').pop() || '').replace(/\.html$/, '').toLowerCase();
+      var p = bySlug[slug];
 
-  /* Project page */
-  var caseRoot = document.getElementById('case');
-  if (caseRoot) {
-    var slug = (new URLSearchParams(location.search).get('p') ||
-      location.pathname.replace(/\/+$/, '').split('/').pop() || '').replace(/\.html$/, '').toLowerCase();
-    var idx = -1;
-    for (var i = 0; i < P.length; i++) if (P[i].slug === slug) { idx = i; break; }
+      if (!p) {
+        document.title = 'Not found: Gerald Chen';
+        caseRoot.innerHTML =
+          '<section class="missing grid">' +
+          '<h1 class="reveal">nothing here yet</h1>' +
+          '<p class="reveal" style="--d:1">There is no project at this address. It may have been renamed.</p>' +
+          '<a class="pill reveal" style="--d:2" href="/">See all projects</a>' +
+          '</section>';
+        return;
+      }
 
-    if (idx === -1) {
-      document.title = 'Not found: Gerald Chen';
-      caseRoot.innerHTML =
-        '<section class="missing grid">' +
-        '<h1 class="reveal">nothing here yet</h1>' +
-        '<p class="reveal" style="--d:1">There is no project at this address. It may have been renamed.</p>' +
-        '<a class="pill reveal" style="--d:2" href="/">See all projects</a>' +
-        '</section>';
-    } else {
-      var p = P[idx], n = P[(idx + 1) % P.length];
+      var pos = -1;
+      for (var i = 0; i < order.length; i++) if (order[i].p.slug === slug) { pos = i; break; }
+      var here = pos > -1 ? order[pos] : null;
+      var nxt = order.length ? order[(pos + 1) % order.length].p : p;
+      var crumb = '';
+      if (here) {
+        var k = here.g.items.indexOf(p) + 1;
+        crumb = '<p class="lbl crumb reveal"><a href="/#' + esc(here.g.id) + '">' +
+          here.g.num + ' &mdash; ' + esc(here.g.title) + '</a><span>' + pad(k) + ' / ' + pad(here.g.items.length) + '</span></p>';
+      }
+
       document.title = p.name + ': Gerald Chen';
       var desc = document.querySelector('meta[name="description"]');
       if (desc) desc.setAttribute('content', p.what);
@@ -202,9 +246,10 @@
       caseRoot.innerHTML =
         '<section class="case-top grid">' +
           '<div class="left">' +
+            crumb +
             '<h1 class="case-title reveal" id="ctitle">' + esc(p.title) + '</h1>' +
             '<div class="case-meta reveal" style="--d:2">' +
-              '<p class="lbl"><span>' + esc(p.name) + '</span><span>' + esc(p.year) + '</span></p>' +
+              '<p class="lbl"><span>' + esc(p.name) + '</span><span>' + esc(p.year) + (p.status ? ' &middot; ' + esc(p.status) : '') + '</span></p>' +
               '<p class="lbl"><span>' + esc(p.kind) + '</span><a href="' + esc(withUtm(p.url)) + '" target="_blank" rel="noopener">' + esc(hostOf(p.url)) + '</a></p>' +
             '</div>' +
           '</div>' +
@@ -225,9 +270,9 @@
         '</section>' +
         '<section class="case-next grid">' +
           '<p class="lbl">Next project</p>' +
-          '<a class="next" href="/' + esc(n.slug) + '">' +
-            '<span class="n">' + esc(n.title) + '</span>' +
-            '<figure><img src="/media/' + esc(n.slug) + '.jpg" alt="" width="864" height="1080" loading="lazy"></figure>' +
+          '<a class="next" href="/' + esc(nxt.slug) + '">' +
+            '<span class="n">' + esc(nxt.title) + '</span>' +
+            '<figure><img src="/media/' + esc(nxt.slug) + '.jpg" alt="" width="864" height="1080" loading="lazy"></figure>' +
           '</a>' +
         '</section>';
 
@@ -249,6 +294,61 @@
       }
     }
   }
+
+  /* The sideways strip (homeLayout "strip") */
+  function wireStrip(strip) {
+    var prev = document.getElementById('prev');
+    var next = document.getElementById('next');
+    function step() {
+      var c = strip.querySelector('.card');
+      if (!c) return 1;
+      return c.getBoundingClientRect().width + parseFloat(getComputedStyle(strip).columnGap || 16);
+    }
+    function sync() {
+      var max = strip.scrollWidth - strip.clientWidth;
+      if (prev) prev.disabled = strip.scrollLeft <= 2;
+      if (next) next.disabled = strip.scrollLeft >= max - 2;
+    }
+    function go(dir) { strip.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' }); }
+    if (prev) prev.addEventListener('click', function () { go(-1); });
+    if (next) next.addEventListener('click', function () { go(1); });
+    strip.addEventListener('scroll', function () { window.requestAnimationFrame(sync); }, { passive: true });
+    window.addEventListener('resize', sync);
+    document.addEventListener('keydown', function (e) {
+      if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+      if (about && about.open) return;
+      if (e.key === 'ArrowRight') { go(1); }
+      if (e.key === 'ArrowLeft') { go(-1); }
+    });
+    /* Drag to scroll with a mouse; touch and trackpads scroll natively. */
+    var down = false, moved = false, sx = 0, sl = 0;
+    strip.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      down = true; moved = false; sx = e.clientX; sl = strip.scrollLeft;
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - sx;
+      if (!moved && Math.abs(dx) > 5) { moved = true; strip.classList.add('dragging'); }
+      if (moved) strip.scrollLeft = sl - dx;
+    });
+    window.addEventListener('pointerup', function () {
+      if (!down) return;
+      down = false;
+      setTimeout(function () { strip.classList.remove('dragging'); }, 0);
+    });
+    strip.addEventListener('click', function (e) { if (moved) { e.preventDefault(); moved = false; } }, true);
+    sync();
+  }
+
+  fetch('/projects.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(build)
+    .catch(function (e) {
+      var where = document.getElementById('home') || document.getElementById('case');
+      if (where) where.innerHTML = '<p class="lbl load-err grid"><span>Projects could not load. If you just edited projects.json, check it for a missing comma or quote.</span></p>';
+      if (window.console) console.error('projects.json', e);
+    });
 
   /* Gentle fade out when moving between pages on this site */
   document.addEventListener('click', function (e) {
