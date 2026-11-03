@@ -40,6 +40,10 @@
     {
       "source": "/equilibrium",
       "destination": "/project"
+    },
+    {
+      "source": "/ib-defs-lab",
+      "destination": "/project"
     }
   ],
   "redirects": [
